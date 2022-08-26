@@ -504,7 +504,7 @@ class LDELayer(nn.Module):
         self.pool_avg = nn.AvgPool2d(kernel_size=4, stride=4)
         self.pool_avg1 = nn.AvgPool2d(kernel_size=2, stride=2)
         self.softmax=nn.Softmax(dim=1)
-        
+        self.conv1x1=nn.Conv2d(384,1,1,1,0)
         
 
     def forward(self, list_x,list_y,q,k,v):
@@ -534,9 +534,13 @@ class LDELayer(nn.Module):
             v[j]=v[j].permute(0,2,1,3).flatten(2)
             #print(q[j].shape,v[j].shape)
             depth_lde.append(fconv_c*(self.softmax((q[j]*list_y[j])*k[j])*v[j]))
-            
-            rgb_lde.append(self.conv_rgb(list_x[j]))
-       
+            list_x_q=self.conv1x1(list_x[j])
+            list_x_k=self.conv1x1(list_x[j])
+            list_x_v=self.conv1x1(list_x[j])
+            #print(list_x_q.shape,list_x_k.shape,list_x_v.shape)
+            rgb_se=(self.softmax(list_x_q @ list_x_k.transpose(-2, -1))) @ list_x_v 
+            #print((rgb_se+list_x[j]).shape)
+            rgb_lde.append(self.conv_rgb((list_x[j]+rgb_se)))
         #sum_d=depth_lde[0]+depth_lde[1]+depth_lde[2]
         #sum_r=rgb_lde[0]+rgb_lde[1]+rgb_lde[2]
         '''edge0=depth_lde[0]+rgb_lde[0]
