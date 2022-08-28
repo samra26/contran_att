@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
     # Testing settings
     parser.add_argument('--model', type=str, default='checkpoints/vgg16.pth')  # Snapshot
-    parser.add_argument('--test_folder', type=str, default='test/vgg16/LFSD/')  # Test results saving folder
+    parser.add_argument('--test_folder', type=str, default='test/LFSD/')  # Test results saving folder
     parser.add_argument('--sal_mode', type=str, default='LFSD',
                         choices=['NJU2K', 'NLPR', 'STERE', 'RGBD135', 'LFSD', 'SIP', 'ReDWeb-S'])  # Test image dataset
     parser.add_argument('--test_root', type=str, default='../testsod')
